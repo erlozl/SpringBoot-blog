@@ -1,0 +1,28 @@
+users
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mustache for & if-else</title>
+</head>
+
+<body>
+    <h1>users 파일 연결 확인</h1>
+    {{#list}}
+    {{id}}
+    {{username}}
+    {{/list}}
+
+    <h1>if else</h1>
+    {{#boolean}}
+    true
+    {{/boolean}}
+    {{^boolean}}
+    false
+    {{/boolean}}
+</body>
+
+</html>
