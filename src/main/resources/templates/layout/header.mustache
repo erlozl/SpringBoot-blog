@@ -1,0 +1,141 @@
+<!-- header -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Blog</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+    @font-face {
+        font-family: 'SpoqaHanSansNeo-Regular';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        font-family: 'SpoqaHanSansNeo-Regular';
+    }
+
+    .navbar-brand {
+        margin-right: 50px;
+    }
+
+    .nav-link {
+        position: relative;
+        transition: all 0.3s;
+    }
+
+    .nav-link:hover::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-color: #fff;
+        left: 0;
+        bottom: 0;
+        color: #fff;
+    }
+
+    .nav-item {
+        margin-right: 10px;
+    }
+
+    .navbar-dark {
+        background-color: #072c63;
+    }
+
+    .card-header {
+        color: rgb(8, 19, 114);
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #1c75b1;
+        color: #fff;
+        border: 1px solid #1c75b1;
+    }
+
+    .btn-primary:hover {
+        background-color: #094c79;
+        color: #fff;
+        border: 1px solid #094c79;
+    }
+
+    .btn-outline-primary {
+        color: #094c79;
+        border: 1px solid #094c79;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #094c79;
+        color: #fff;
+        border: 1px solid #094c79;
+    }
+
+    .card-body .form-label,
+    .card-body .comment {
+        font-size: 14px;
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .list_btn {
+        margin-left: 10px;
+    }
+
+    .form-control:focus {
+        border-color: #094c79;
+        outline: 0;
+        box-shadow: 0 0 0 0;
+    }
+</style>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">rlozl</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/joinForm">회원가입</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/loginForm">로그인</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/board/saveForm">글쓰기</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/updateForm">회원정보</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">로그아웃</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>

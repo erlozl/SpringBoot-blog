@@ -1,0 +1,35 @@
+{{> /layout/header}}
+
+<!-- 회원가입 -->
+<div class="container p-5">
+
+    <div class="card">
+        <div class="card-header">회원가입</div>
+        <div class="card-body">
+            <!-- 요청을 하면 localhost:8080/join POST로 요청됨-->
+            <!-- username=사용자입력값 & email=사용자입력값 & password=사용자값 -->
+            <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
+                <!-- form 태그의 method는 기본값이 get임 -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">* 이름</label>
+                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="email" class="form-label">* 이메일</label>
+                    <input type="email" class="form-control" id="email" placeholder="이메일을 입력해주세요" name="email">
+                </div>
+                <div class="mb-4">
+                    <label for="pw" class="form-label">* 비밀번호</label>
+                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password">
+                </div>
+
+                <button type="submit" class="btn btn-primary form-control">회원가입</button>
+                <!-- "form" 태그 안에 있는 "input" 태그안에 있는 모든 것을 전송-->
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{{> /layout/footer}}

@@ -1,0 +1,31 @@
+{{> /layout/header}}
+
+<!-- 로그인 -->
+<div class="container p-5">
+
+    <div class="card">
+        <div class="card-header">로그인</div>
+        <div class="card-body">
+            <!-- 요청을 하면 localhost:8080/login POST로 요청됨-->
+            <!-- username=사용자입력값 & password=사용자값 -->
+
+            <!-- action에 걸린 주소를 엔드포인트라고 함 -->
+            <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+                <!-- form 태그의 method는 기본값이 get임 -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">* 이름</label>
+                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username">
+                </div>
+                <div class="mb-3">
+                    <label for="pw" class="form-label">* 비밀번호</label>
+                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password">
+                </div>
+                <button type="submit" class="btn btn-primary">로그인</button>
+                <!-- "form" 태그 안에 있는 "input" 태그안에 있는 모든 것을 전송-->
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{{> /layout/footer}}
