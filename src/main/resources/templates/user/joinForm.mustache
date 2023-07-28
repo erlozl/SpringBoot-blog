@@ -12,15 +12,18 @@
                 <!-- form 태그의 method는 기본값이 get임 -->
                 <div class="mb-3">
                     <label for="name" class="form-label">* 이름</label>
-                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username">
+                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username" required
+                        maxlength="20">
                 </div>
                 <div class="mb-3 mt-3">
-                    <label for="email" class="form-label">* 이메일</label>
-                    <input type="email" class="form-control" id="email" placeholder="이메일을 입력해주세요" name="email">
+                    <label for="pw" class="form-label">* 비밀번호</label>
+                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password"
+                        required maxlength="20">
                 </div>
                 <div class="mb-4">
-                    <label for="pw" class="form-label">* 비밀번호</label>
-                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password">
+                    <label for="email" class="form-label">* 이메일</label>
+                    <input type="email" class="form-control" id="email" placeholder="이메일을 입력해주세요" name="email" required
+                        maxlength="20">
                 </div>
 
                 <button type="submit" class="btn btn-primary form-control">회원가입</button>

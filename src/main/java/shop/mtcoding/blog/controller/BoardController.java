@@ -23,5 +23,6 @@ public class BoardController {
     @GetMapping("/board/{id}")
     public String detailPage() {
         return "board/detail";
+        
     }
 }
