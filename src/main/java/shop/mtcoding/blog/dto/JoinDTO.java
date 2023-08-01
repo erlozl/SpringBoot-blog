@@ -1,7 +1,5 @@
 package shop.mtcoding.blog.dto;
 
-import javax.persistence.Column;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -19,12 +19,13 @@ public class User {
     // 정해놓은 데이터 베이스 전략대로 바뀜
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false, length = 20, unique = true) // NOT NULL 제약 추가
-
     private String username;
-    @Column(nullable = false, length = 20)
 
+    @Column(nullable = false, length = 20)
     private String password;
+
     @Column(nullable = false, length = 20)
     private String email;
 

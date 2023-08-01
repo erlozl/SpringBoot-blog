@@ -4,13 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.JoinDTO;
+import shop.mtcoding.blog.dto.LoginDTO;
+import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.repository.UserRepository;
 
 @Controller
@@ -19,22 +23,62 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired // Autowried를 사용한다는 것은 ioc컨테이너에서 꺼내준다는 것임
+    private HttpSession session; // request는 가방, session은 서랍
+
+    // @ResponseBody ResponseBody를 붙이면 데이터를 return함
+    // @GetMapping("/test/login")
+    // public String testLogin() {
+    // User sessionUser = (User) session.getAttribute("sessionUser");
+    // if (sessionUser == null) {
+    // return "로그인이 되지 않았습니다";
+    // } else {
+    // return "로그인 됨 : " + sessionUser.getUsername();
+    // }
+    // }
+
+    @PostMapping("/login")
+    public String login(LoginDTO loginDTO) {
+        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {
+            return "redirect:/40x";
+        }
+        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
+            return "redirect:/40x";
+        }
+
+        // 핵심기능
+
+        try {
+            User user = userRepository.findByUsernameAndPassword(loginDTO);
+            session.setAttribute("sessionUser", user);
+            return "redirect:/";
+        } catch (Exception e) {
+            return "redirect:/exLogin";
+        }
+    }
+
     // 이게 진짜 방법 (실무 )
     @PostMapping("/join")
-    public String join(JoinDTO joinDto) {
+    public String join(JoinDTO joinDTO) {
         // 핵심기능
 
         // validation check(유효성 검사 - 반드시 해야함! - 포스트맨을 타고 온 공격자들을 막는 것임)
-        if (joinDto.getUsername() == null || joinDto.getUsername().isEmpty()) {
+        if (joinDTO.getUsername() == null || joinDTO.getUsername().isEmpty()) {
             return "redirect:/40x";
         }
-        if (joinDto.getPassword() == null || joinDto.getPassword().isEmpty()) {
+        if (joinDTO.getPassword() == null || joinDTO.getPassword().isEmpty()) {
             return "redirect:/40x";
         }
-        if (joinDto.getEmail() == null || joinDto.getEmail().isEmpty()) {
+        if (joinDTO.getEmail() == null || joinDTO.getEmail().isEmpty()) {
             return "redirect:/40x";
         }
-        userRepository.save(joinDto);
+
+        // 중복체크 예외처리
+        try {
+            userRepository.save(joinDTO); // 핵심 기능
+        } catch (Exception e) {
+            return "redirect:/50x";
+        }
         return "redirect:/loginForm";
     }
 
@@ -55,7 +99,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout() {
-        return "redirect:/";
+        return "redirect:/loginForm";
     }
 
     // 스프링이 직접 파싱해줌 (정상인 )

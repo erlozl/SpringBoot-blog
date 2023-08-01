@@ -14,11 +14,11 @@
                 <!-- form 태그의 method는 기본값이 get임 -->
                 <div class="mb-3">
                     <label for="name" class="form-label">* 이름</label>
-                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username">
+                    <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username" required maxlength="20">
                 </div>
                 <div class="mb-3">
                     <label for="pw" class="form-label">* 비밀번호</label>
-                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password">
+                    <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요 " name="password" required maxlength="20">
                 </div>
                 <button type="submit" class="btn btn-primary">로그인</button>
                 <!-- "form" 태그 안에 있는 "input" 태그안에 있는 모든 것을 전송-->
