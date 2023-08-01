@@ -14,12 +14,11 @@
                 <!-- form 태그의 method는 기본값이 get임 -->
                 <div class="mb-3">
                     <label for="title" class="form-label ">제목</label>
-                    <input type="text" value="제목1" class="form-control" id="title" placeholder="제목을 입력해주세요"
-                        name="title">
+                    <input type="text" value="" class="form-control" id="title" placeholder="제목을 입력해주세요"
+                        name="title" required maxlength="100">
                 </div>
                 <label class="comment mb-2" for="comment">내용</label>
-                <textarea class="form-control mb-4" rows="5" id="comment" name="content" placeholder="내용을 입력해주세요">내용1
-                </textarea>
+                <textarea class="form-control mb-4" rows="5" id="comment" name="content" placeholder="내용을 입력해주세요"></textarea>
                 <button type="submit" class="btn btn-primary">글쓰기</button>
                 <!-- "form" 태그 안에 있는 "input" 태그안에 있는 모든 것을 전송-->
             </form>

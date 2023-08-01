@@ -10,8 +10,11 @@
             <!-- username=사용자입력값 & password=사용자값 -->
 
             <!-- action에 걸린 주소를 엔드포인트라고 함 -->
+            <!-- form 태그의 method는 기본값이 get임 -->
             <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
-                <!-- form 태그의 method는 기본값이 get임 -->
+                <!-- login은 사용자의 인증을 위한 기능 get요청으로 url에 정보가 노출되므라
+                바디에 정보를 담아서 전송해야 한다 -->
+
                 <div class="mb-3">
                     <label for="name" class="form-label">* 이름</label>
                     <input type="text" class="form-control" id="name" placeholder="이름을 입력해주세요" name="username" required maxlength="20">

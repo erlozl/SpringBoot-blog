@@ -2,7 +2,7 @@
 
 <!-- 상세보기 -->
 
-<div class="container p-5">
+<div class="container">
     <!-- 수정삭제버튼 -->
     <div class="d-flex justify-content-between">
         <div>
@@ -15,11 +15,20 @@
     </div>
     <!-- 게시글내용 -->
     <div>
-        <h2><b>제목자리</b></h2>
+        <div class="list_tit">
+            <span class="list_num">번호 
+                <span class="list_txt">{{boardWriteById.id}}</span>
+            </span>
+            <span class="list_data">날짜 
+                <span class="list_txt">{{boardWriteById.createdAt}}</span>
+            </span>
+        </div>
+        <h2><b>{{boardWriteById.title}}</b></h2>
         <hr />
         <div class="py-5">
-            내용입니다
+            {{boardWriteById.content}}
         </div>
+
     </div>
     <!-- 댓글 -->
     <div class="card mt-3">

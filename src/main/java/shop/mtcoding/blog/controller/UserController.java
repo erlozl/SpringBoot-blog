@@ -45,7 +45,6 @@ public class UserController {
         if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
             return "redirect:/40x";
         }
-
         // 핵심기능
 
         try {
@@ -63,8 +62,12 @@ public class UserController {
         // 핵심기능
 
         // validation check(유효성 검사 - 반드시 해야함! - 포스트맨을 타고 온 공격자들을 막는 것임)
+        // 공백이거나 값을 적지 않을 때 (view에서는 required로 막은 상태, 포스트맨으로 들어올 가능성이 있을 때 유효성 검사)
         if (joinDTO.getUsername() == null || joinDTO.getUsername().isEmpty()) {
             return "redirect:/40x";
+            // @ResponseBody를 붙여서 return에 error라는 데이터 값을 보내도 되지만
+            // 가독성을 좋게 하기 위해서 ErrorController에 페이지 연결해서 내주는 게 좋다
+            // view ㅡ> controller ㅡ> repository
         }
         if (joinDTO.getPassword() == null || joinDTO.getPassword().isEmpty()) {
             return "redirect:/40x";
@@ -99,7 +102,8 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout() {
-        return "redirect:/loginForm";
+        session.invalidate(); // 세션 무효화 ( 내 서랍을 비우는 것)
+        return "redirect:/";
     }
 
     // 스프링이 직접 파싱해줌 (정상인 )

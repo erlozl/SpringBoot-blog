@@ -1,3 +1,13 @@
+:root {
+  --base_01: #072c63;
+  --base_02: #1c75b1;
+  --base_03: #081372;
+  --base_04: #fff;
+  --btn_01: #094c79;
+  --bg_01: #efefef;
+  --text_color01: #081372;
+}
+
 @font-face {
   font-family: "SpoqaHanSansNeo-Regular";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff")
@@ -9,76 +19,93 @@
 * {
   font-family: "SpoqaHanSansNeo-Regular";
 }
+.container {
+  padding: 50px 0 250px 0;
+  width: 80%;
+}
 
+/* nav */
 .navbar-brand {
   margin-right: 50px;
 }
-
 .nav-link {
   position: relative;
   transition: all 0.3s;
 }
-
 .nav-link:hover::after {
   content: "";
   position: absolute;
   width: 100%;
   height: 1px;
-  background-color: #fff;
+  background-color: var(--base_03);
   left: 0;
   bottom: 0;
-  color: #fff;
+  color: var(--base_04);
 }
-
 .nav-item {
   margin-right: 10px;
 }
-
 .navbar-dark {
-  background-color: #072c63;
+  background-color: var(--base_01);
 }
 
+/* card */
+.card-body {
+  margin: 10px;
+  border: 1px solid var(--bg_01);
+  border-radius: 5px;
+}
 .card-header {
-  color: rgb(8, 19, 114);
+  color: var(--text_color01);
   font-weight: bold;
 }
-
 .btn-primary {
-  background-color: #1c75b1;
-  color: #fff;
-  border: 1px solid #1c75b1;
+  background-color: var(--base_02);
+  color: var(--base_04);
+  border: 1px solid var(--base_02);
 }
-
-.btn-primary:hover {
-  background-color: #094c79;
-  color: #fff;
-  border: 1px solid #094c79;
-}
-
-.btn-outline-primary {
-  color: #094c79;
-  border: 1px solid #094c79;
-}
-
-.btn-outline-primary:hover {
-  background-color: #094c79;
-  color: #fff;
-  border: 1px solid #094c79;
-}
-
 .card-body .form-label,
 .card-body .comment {
   font-size: 14px;
 }
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+/* btn */
+.btn-primary:hover {
+  background-color: var(--btn_01);
+  color: var(--base_04);
+  border: 1px solid var(--btn_01);
+}
+.btn-outline-primary {
+  color: var(--btn_01);
+  border: 1px solid var(--btn_01);
+}
+.btn-outline-primary:hover {
+  background-color: var(--btn_01);
+  color: var(--base_04);
+  border: 1px solid var(--btn_01);
 }
 
-.pagination {
-  justify-content: center;
+/* list */
+.list_tit {
+  background-color: var(--bg_01);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.list_txt {
+  padding-left: 5px;
+  position: relative;
+  color: var(--text_color01);
+}
+.list_txt::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 10px;
+  top: 0;
+  left: 0;
 }
 
 .list-group-item {
@@ -86,13 +113,30 @@
   justify-content: space-between;
   align-items: center;
 }
-
 .list_btn {
   margin-left: 10px;
 }
 
+/* form */
 .form-control:focus {
-  border-color: #094c79;
+  border-color: var(--btn_01);
   outline: 0;
   box-shadow: 0 0 0 0;
 }
+
+/* pagination */
+.pagination {
+  justify-content: center;
+}
+.page-link {
+  color: var(--btn_01);
+}
+
+/* footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+/* etc */
