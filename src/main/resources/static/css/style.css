@@ -84,7 +84,9 @@
   color: var(--base_04);
   border: 1px solid var(--btn_01);
 }
-
+.btn_box {
+  display: flex;
+}
 /* list */
 .list_tit {
   background-color: var(--bg_01);
@@ -127,7 +129,12 @@
 /* pagination */
 .pagination {
   justify-content: center;
+  position: absolute;
+  margin: 0 auto;
+  width: 80%;
+  bottom: 230px;
 }
+
 .page-link {
   color: var(--btn_01);
 }

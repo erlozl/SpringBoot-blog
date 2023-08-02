@@ -50,9 +50,12 @@ public class UserController {
         try {
             User user = userRepository.findByUsernameAndPassword(loginDTO);
             session.setAttribute("sessionUser", user);
+            // 로그인 정보 저장
             return "redirect:/";
+            // 유저 정보가 맞으면 메인페이지로 가기
         } catch (Exception e) {
             return "redirect:/exLogin";
+            // 유저 정보가 틀리다면 다시 로그인 페이지로
         }
     }
 
@@ -76,7 +79,7 @@ public class UserController {
             return "redirect:/40x";
         }
 
-        // 중복체크 예외처리
+        // DB에서 Unique값을 넣어서 중복체크 예외처리
         try {
             userRepository.save(joinDTO); // 핵심 기능
         } catch (Exception e) {
@@ -102,7 +105,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout() {
-        session.invalidate(); // 세션 무효화 ( 내 서랍을 비우는 것)
+        session.invalidate(); // 세션의 모든 데이터가 삭제, 무효화 ( 내 서랍을 비우는 것)
         return "redirect:/";
     }
 

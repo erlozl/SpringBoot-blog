@@ -5,30 +5,36 @@
 <div class="container">
     <!-- 수정삭제버튼 -->
     <div class="d-flex justify-content-between">
-        <div>
+        <div class="mb-5">
             <button class="btn btn-secondary me-1">이전</button>
         </div>
-        <div class="mb-5">
-            <button class="btn btn-warning me-1">수정</button>
-            <button class="btn btn-danger">삭제</button>
+        {{! 수정 삭제 버튼 }}
+        {{#pageOwner}}
+        <div class="mb-5 btn_box">
+            <a class="btn btn-warning me-1" href="/board/{{board.id}}/updateForm">수정</a>
+            <form action="/board/{{board.id}}/delete" method="post">
+                <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
         </div>
+        {{/pageOwner}}
     </div>
     <!-- 게시글내용 -->
+    {{#board}}
     <div>
         <div class="list_tit">
-            <span class="list_num">번호 
-                <span class="list_txt">{{boardWriteById.id}}</span>
+            <span class="list_num">번호
+                <span class="list_txt">{{id}}</span>
             </span>
-            <span class="list_data">날짜 
-                <span class="list_txt">{{boardWriteById.createdAt}}</span>
+            <span class="list_data">날짜
+                <span class="list_txt">{{createdAt}}</span>
             </span>
         </div>
-        <h2><b>{{boardWriteById.title}}</b></h2>
+        <h2><b>{{title}}</b></h2>
         <hr />
         <div class="py-5">
-            {{boardWriteById.content}}
+            {{content}}
         </div>
-
+        {{/board}}
     </div>
     <!-- 댓글 -->
     <div class="card mt-3">
