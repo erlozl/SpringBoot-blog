@@ -9,11 +9,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.JoinDTO;
 import shop.mtcoding.blog.dto.LoginDTO;
+import shop.mtcoding.blog.dto.UserUpdateDTO;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.repository.UserRepository;
 
@@ -98,9 +100,27 @@ public class UserController {
         return "user/joinForm";
     }
 
-    @GetMapping("/user/updateForm")
-    public String userUpdateForm() {
+    @GetMapping("/user/{id}/updateForm")
+    public String userUpdateForm(@PathVariable Integer id, HttpServletRequest request) {
+        User user = userRepository.findById(id);
+        user = (User) session.getAttribute("sessionUser");
+        if (user == null) {
+            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+        }
+        request.setAttribute("user", user);
         return "user/updateForm";
+    }
+
+    @PostMapping("/user/{id}/update")
+    public String userUpdate(@PathVariable Integer id, UserUpdateDTO userUpdateDTO) {
+        User user = userRepository.findById(id);
+        user = (User) session.getAttribute("sessionUser");
+        if (user == null) {
+            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+        }
+        userRepository.update(userUpdateDTO, id);
+
+        return "redirect:/";
     }
 
     @GetMapping("/logout")

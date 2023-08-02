@@ -1,5 +1,7 @@
 package shop.mtcoding.blog.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -9,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blog.dto.JoinDTO;
 import shop.mtcoding.blog.dto.LoginDTO;
+import shop.mtcoding.blog.dto.UpdateDTO;
+import shop.mtcoding.blog.dto.UserUpdateDTO;
 import shop.mtcoding.blog.model.User;
 
 // 지금까지 IoC컨테이너에 뜬 것들
@@ -47,4 +51,19 @@ public class UserRepository {
         query.executeUpdate();
     }
 
+    @Transactional
+    public void update(UserUpdateDTO userUpdateDTO, Integer id) {
+        Query query = em.createNativeQuery(
+                "update user_tb set password = :password where id = :id");
+        query.setParameter("password", userUpdateDTO.getPassword());
+        query.setParameter("id", id);
+        query.executeUpdate();
+    }
+
+    public User findById(Integer id) {
+        Query query = em.createNativeQuery("select * from user_tb where id= :id", User.class);
+        query.setParameter("id", id);
+        User userList = (User) query.getSingleResult();
+        return userList;
+    }
 }
