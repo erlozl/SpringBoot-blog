@@ -30,6 +30,7 @@ public class BoardController {
 
     // 보통 메인은 주소를 두개 잡음
     // localhost:8080?page=1
+    // localhost:8080 페이지로 그냥 요청하면 page의 값이 null이 뜸
     @GetMapping({ "/", "/board" })
     // 값이 안 들어오면 디폴트값으로 0이 들어간다는 뜻
     public String index(@RequestParam(defaultValue = "0") Integer page,
@@ -38,20 +39,30 @@ public class BoardController {
         // 2. 인증 검사 X
 
         final int PAGESIZE = 3;
-        List<Board> boardList = boardRepository.findAll(page);
-        List<Board> countAll = boardRepository.findCountAll();
-        int boardAllSize = countAll.size();
+        List<Board> boardList = boardRepository.findAll(page); // 1
+        // List<Board> countAll = boardRepository.findCountAll();
+        int totalCount = boardRepository.count(); // totalCount = 5
+        int totalPage = totalCount / 3; // totalPage = 1
+        if (totalCount % 3 > 0) {
+            totalPage = totalPage + 1; // totalPage = 2
+        }
+        boolean last = totalPage - 1 == page;
+        // int boardAllSize = countAll.size();
         System.out.println("테스트 boardList :" + boardList.size()); // 게시물 3개
-        System.out.println("테스트 countAll:" + countAll.size()); //
+        System.out.println("테스트 boardList :" + boardList.get(0).getTitle());
         // 데이터가 잘 들어갔는지 확인
 
         request.setAttribute("boardList", boardList);
         request.setAttribute("prevPage", page - 1);
         request.setAttribute("nextPage", page + 1);
         request.setAttribute("first", page == 0 ? true : false);
-        request.setAttribute("last", (boardAllSize / PAGESIZE) == page
-                || ((boardAllSize % PAGESIZE) == 0 && (boardAllSize / PAGESIZE) - 1 == page) ? true : false);
-
+        // request.setAttribute("last", (boardAllSize / PAGESIZE) == page
+        // || ((boardAllSize % PAGESIZE) == 0 && (boardAllSize / PAGESIZE) - 1 == page)
+        // ? true : false);
+        request.setAttribute("last", last);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("totalCount", totalCount);
+        // 페이징 데이터라고 함
         return "index";
     }
 
