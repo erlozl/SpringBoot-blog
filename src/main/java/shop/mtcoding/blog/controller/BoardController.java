@@ -29,23 +29,6 @@ public class BoardController {
     @Autowired
     private HttpSession session;
 
-    @PostMapping("/board/{id}/update")
-    public String update(@PathVariable Integer id, UpdateDTO updateDTO) {
-        // 1. 인증 검사
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
-        }
-        // 2. 권한 체크
-        Board board = boardRepository.findById(id);
-        if (board.getUser().getId() != sessionUser.getId()) {
-            return "redirect:/40x"; // 403 권한없음
-        }
-
-        boardRepository.update(updateDTO, id);
-        return "redirect:/board/" + id;
-    }
-
     @GetMapping("/board/{id}/updateForm")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
         // 1. 인증 검사
@@ -62,6 +45,23 @@ public class BoardController {
         // 3. 핵심 로직
         request.setAttribute("board", board);
         return "board/updateForm";
+    }
+
+    @PostMapping("/board/{id}/update")
+    public String update(@PathVariable Integer id, UpdateDTO updateDTO) {
+        // 1. 인증 검사
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+        }
+        // 2. 권한 체크
+        Board board = boardRepository.findById(id);
+        if (board.getUser().getId() != sessionUser.getId()) {
+            return "redirect:/40x"; // 403 권한없음
+        }
+
+        boardRepository.update(updateDTO, id);
+        return "redirect:/board/" + id;
     }
 
     @PostMapping("/board/{id}/delete") // 1.PathVariable 값 받기
@@ -109,8 +109,8 @@ public class BoardController {
         }
         boolean last = totalPage - 1 == page;
         // int boardAllSize = countAll.size();
-        System.out.println("테스트 boardList :" + boardList.size()); // 게시물 3개
-        System.out.println("테스트 boardList :" + boardList.get(0).getTitle());
+        // System.out.println("테스트 boardList :" + boardList.size()); // 게시물 3개
+        // System.out.println("테스트 boardList :" + boardList.get(0).getTitle());
         // 데이터가 잘 들어갔는지 확인
 
         request.setAttribute("boardList", boardList);
@@ -164,10 +164,11 @@ public class BoardController {
 
         boolean pageOwner = false;
         if (sessionUser != null) {
-            System.out.println("테스트 세션 ID : " + sessionUser.getId());
-            System.out.println("테스트 세션 board.getUser().getId() : " + board.getUser().getId());
+            // System.out.println("테스트 세션 ID : " + sessionUser.getId());
+            // System.out.println("테스트 세션 board.getUser().getId() : " +
+            // board.getUser().getId());
             pageOwner = sessionUser.getId() == board.getUser().getId();
-            System.out.println("테스트 : pageOwner : " + pageOwner);
+            // System.out.println("테스트 : pageOwner : " + pageOwner);
         }
 
         request.setAttribute("board", board);

@@ -28,6 +28,7 @@ public class Board {
     // 화면을 봤을 때 무엇이 필요한지 확인하기
     @Column(nullable = false, length = 100)
     private String title;
+
     @Column(nullable = true, length = 1000)
     private String content;
 

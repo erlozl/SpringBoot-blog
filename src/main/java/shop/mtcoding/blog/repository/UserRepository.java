@@ -24,31 +24,53 @@ public class UserRepository {
     // System.out.println("테스트 : UserRepository()");
     // } ㅡ> Repository의 어노테이션을 붙이면 메모리에 떴다는 증거 (알아서 new해줌)
 
+    // EntityManager가 : 이렇게 바인딩하게 해줌
     @Autowired
     private EntityManager em;
-    // EntityManager가 : 이렇게 바인딩하게 해줌
 
-    public User findByUsernameAndPassword(LoginDTO loginDTO) {
-        System.out.println("테스트 : 1");
-        Query query = em.createNativeQuery("select * from user_tb where username = :username and password = :password",
-                User.class);
-        System.out.println("테스트 : 2");
-
-        query.setParameter("username", loginDTO.getUsername());
-        query.setParameter("password", loginDTO.getPassword());
-        System.out.println("테스트 : ");
-
-        return (User) query.getSingleResult();
+    // 안전한 코드 짜기 위함 - 알고 있는 것을 예방하는 것
+    public User findByUsername(String username) {
+        try {
+            Query query = em.createNativeQuery("select * from user_tb where username = :username",
+                    User.class);
+            query.setParameter("username", username);
+            return (User) query.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
+    public User findByUsernameAndPassword(LoginDTO loginDTO) {
+        Query query = em.createNativeQuery("select * from user_tb where username = :username and password = :password",
+                User.class);
+        query.setParameter("username", loginDTO.getUsername());
+        query.setParameter("password", loginDTO.getPassword());
+
+        return (User) query.getSingleResult();
+
+    }
+
+    // 일의 최소 단위 (상대적임) - 트랜잭션
+    // 다 진행됐으면 저장 (커밋) / 하나라도 틀렸다면 되돌아가기 (롤백)
+
     @Transactional
+    // 이걸 붙여야 고립성을 피할 수 있음
+    // 트랜잭션이 안 붙으면? 동시에 무언가가 일어나기 때문에
+    // 트랜잭션 걸려있으면 write 못함
+    // ㅡ> 다른 작업(트랜잭션)이 해당 자원을 사용할 수 없다는 것을 의미
+    // 고립성 - 독립적임
+    // 트랜잭션이 안 걸려있다면 모두 다 같이 예매 가능,,개판
     public void save(JoinDTO joinDTO) {
+        System.out.println("테스트 : 1");
         Query query = em
                 .createNativeQuery("insert into user_tb (username,password,email) values(:username,:password,:email)");
+        System.out.println("테스트 : 2");
         query.setParameter("username", joinDTO.getUsername());
         query.setParameter("password", joinDTO.getPassword());
         query.setParameter("email", joinDTO.getEmail());
-        query.executeUpdate();
+        System.out.println("테스트 : 3");
+        query.executeUpdate(); // 쿼리를 전송 ( DBMS )
+        System.out.println("테스트 : 4");
     }
 
     @Transactional

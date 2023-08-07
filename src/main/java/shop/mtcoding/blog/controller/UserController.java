@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +41,21 @@ public class UserController {
     // return "로그인 됨 : " + sessionUser.getUsername();
     // }
     // }
+
+    // localhost:8080/check?username = ssar
+    // @ResponseBody
+    // ajax통신 - 데이터만 줌
+    @GetMapping("/check")
+    public ResponseEntity<String> checkin(String username) {
+        // ResponseEntity 는 ResponseBody를 안붙여도 데이터를 응답함
+        // HttpServletResponse를 적어서 response.setStatus를 안 적어도 됨
+
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return new ResponseEntity<String>("유저네임이 중복되었습니다", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<String>("유저네임을 사용할 수 있습니다", HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public String login(LoginDTO loginDTO) {
@@ -81,13 +99,17 @@ public class UserController {
             return "redirect:/40x";
         }
 
-        // DB에서 Unique값을 넣어서 중복체크 예외처리
-        try {
-            userRepository.save(joinDTO); // 핵심 기능
-        } catch (Exception e) {
+        // DB에 해당 username이 있는지 체크해보기
+        // 예외처리를 언제해봤나 ?
+        // 포스트맨에서 다이렉트로 연결요청이 왔을 때
+
+        User user = userRepository.findByUsername(joinDTO.getUsername());
+        if (user != null) {
             return "redirect:/50x";
         }
+        userRepository.save(joinDTO); // 핵심 기능
         return "redirect:/loginForm";
+
     }
 
     @GetMapping("/loginForm")
@@ -103,6 +125,7 @@ public class UserController {
     @GetMapping("/user/{id}/updateForm")
     public String userUpdateForm(@PathVariable Integer id, HttpServletRequest request) {
         User user = userRepository.findById(id);
+
         user = (User) session.getAttribute("sessionUser");
         if (user == null) {
             return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
@@ -119,7 +142,6 @@ public class UserController {
             return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
         }
         userRepository.update(userUpdateDTO, id);
-
         return "redirect:/";
     }
 
