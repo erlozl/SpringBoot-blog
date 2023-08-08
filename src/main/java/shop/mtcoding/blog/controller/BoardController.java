@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blog.dto.BoardDetailDTO;
 import shop.mtcoding.blog.dto.UpdateDTO;
 import shop.mtcoding.blog.dto.WriteDTO;
 import shop.mtcoding.blog.model.Board;
+import shop.mtcoding.blog.model.Reply;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.repository.BoardRepository;
+import shop.mtcoding.blog.repository.ReplyRepository;
 
 // 테이블 하나당 mvc가 나옴
 
@@ -26,8 +30,30 @@ public class BoardController {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
+
     @Autowired
     private HttpSession session;
+
+    // @ResponseBody
+    // @GetMapping("/board/reply")
+    // public List<Reply> test2() {
+    // List<Reply> replys = replyRepository.findByBoardId(1);
+    // return replys;
+    // // object 리턴하면 디폴트값이 json 데이터로 리턴
+    // }
+    // 편해서 쓰는 로직,
+    // 하지만 서비스가 느려질 때는 다른 걸로 바꿔야함
+
+    @ResponseBody
+    @GetMapping("/board/test/1")
+    public Board test() {
+        Board board = boardRepository.findById(1);
+        return board;
+        // object 리턴하면 디폴트값이 json 데이터로 리턴
+    }
 
     @GetMapping("/board/{id}/updateForm")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
@@ -158,20 +184,21 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public String detailPage(@PathVariable Integer id, HttpServletRequest request) { // C
+    public String detailPage(@PathVariable Integer id, HttpServletRequest request, Integer sessionUserid) { // C
         User sessionUser = (User) session.getAttribute("sessionUser"); // session접근하는 이유 - 권한 체크
-        Board board = boardRepository.findById(id); // M
+        // Board board = boardRepository.findById(id); // M
+        List<BoardDetailDTO> replyJoinAll = replyRepository.findByIdJoinReply(id, sessionUserid);
 
         boolean pageOwner = false;
         if (sessionUser != null) {
             // System.out.println("테스트 세션 ID : " + sessionUser.getId());
             // System.out.println("테스트 세션 board.getUser().getId() : " +
             // board.getUser().getId());
-            pageOwner = sessionUser.getId() == board.getUser().getId();
+            pageOwner = sessionUser.getId() == replyJoinAll.get(0).getBoardUserId();
             // System.out.println("테스트 : pageOwner : " + pageOwner);
         }
 
-        request.setAttribute("board", board);
+        request.setAttribute("replyJoinAll", replyJoinAll);
         request.setAttribute("pageOwner", pageOwner);
         // true는 내가 적은 글, false는 남이 적은 글
 

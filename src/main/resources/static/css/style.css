@@ -5,6 +5,7 @@
   --base_04: #fff;
   --btn_01: #094c79;
   --bg_01: #efefef;
+  --btn_01: #1a616d;
   --text_color01: #081372;
 }
 
@@ -19,9 +20,16 @@
 * {
   font-family: "SpoqaHanSansNeo-Regular";
 }
+
 .container {
   padding: 50px 0 250px 0;
   width: 80%;
+}
+button {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  cursor: pointer;
 }
 
 /* nav */
@@ -86,6 +94,16 @@
 }
 .btn_box {
   display: flex;
+}
+.dupli_check {
+  display: flex;
+}
+.dupli_check_btn {
+  width: 100px;
+  margin-left: 10px;
+  border-radius: 5px;
+  background-color: var(--btn_01);
+  color: var(--base_04);
 }
 /* list */
 .list_tit {

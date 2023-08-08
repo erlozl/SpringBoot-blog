@@ -15,9 +15,11 @@
                 <!-- form 태그의 method는 기본값이 get임 -->
                 <div class="mb-3">
                     <label for="name" class="form-label">* 이름</label>
-                    <input type="text" id="username" class="form-control" id="name" placeholder="이름을 입력해주세요"
-                        name="username" required maxlength="20" onchange="usernameChange()">
-                    <button type="button" onclick="check()">중복체크</button>
+                    <div class="dupli_check">
+                        <input type="text" id="username" class="form-control" id="name" placeholder="이름을 입력해주세요"
+                            name="username" required maxlength="20" onchange="usernameChange()">
+                        <button class="dupli_check_btn" type="button" onclick="check()">중복체크</button>
+                    </div>
                     <!-- form태그 안에 button을 만들면 디폴트값으로 submit이 되기 때문에
                     따로 type작성을 해주자 -->
                 </div>
