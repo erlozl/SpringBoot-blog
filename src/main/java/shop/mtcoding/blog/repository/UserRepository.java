@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.engine.internal.JoinSequence.Join;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,11 +76,11 @@ public class UserRepository {
     }
 
     @Transactional
-    public void update(UserUpdateDTO userUpdateDTO, Integer id) {
+    public void update(UserUpdateDTO userUpdateDTO) {
         Query query = em.createNativeQuery(
                 "update user_tb set password = :password where id = :id");
-        query.setParameter("password", userUpdateDTO.getPassword());
-        query.setParameter("id", id);
+        query.setParameter("password", BCrypt.hashpw(userUpdateDTO.getPassword(), BCrypt.gensalt()));
+        query.setParameter("id", userUpdateDTO.getId());
         query.executeUpdate();
     }
 
@@ -87,5 +89,33 @@ public class UserRepository {
         query.setParameter("id", id);
         User userList = (User) query.getSingleResult();
         return userList;
+    }
+
+    // 해쉬 적용
+
+    @Transactional
+    public void hashSave(JoinDTO joinDTO) {
+        Query query = em
+                .createNativeQuery("insert into user_tb (username,password,email) values(:username,:password,:email)");
+        query.setParameter("username", joinDTO.getUsername());
+        query.setParameter("password", joinDTO.getPassword());
+        query.setParameter("email", joinDTO.getEmail());
+        query.executeUpdate(); // 쿼리를 전송 ( DBMS )
+    }
+
+    public User findByUserId(LoginDTO loginDTO) {
+        Query query = em.createNativeQuery("select * from user_tb where username= :username", User.class);
+        query.setParameter("username", loginDTO.getUsername());
+        User userList = (User) query.getSingleResult();
+        return userList;
+    }
+
+    @Transactional
+    public void hashUpdate(UserUpdateDTO userUpdateDTO, Integer id) {
+        Query query = em.createNativeQuery(
+                "update user_tb set password = :password where id = :id");
+        query.setParameter("password", userUpdateDTO.getPassword());
+        query.setParameter("id", id);
+        query.executeUpdate();
     }
 }

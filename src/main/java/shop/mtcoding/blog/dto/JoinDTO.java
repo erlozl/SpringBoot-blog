@@ -1,5 +1,7 @@
 package shop.mtcoding.blog.dto;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import lombok.Getter;
 import lombok.Setter;
 

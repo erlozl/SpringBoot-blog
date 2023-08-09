@@ -54,9 +54,8 @@
                     <div>{{replyComment}}</div>
                 </div>
                 <!-- 요청을 하면 localhost:8080/reply/1/delete POST로 요청됨-->
-                <!-- action에 걸린 주소를 엔드포인트라고 함 -->  
-                <form action="/reply/{{replyId}}/delete" method="post"> 
-                {{! 눌릴 때마다 동적으로 바뀜 }}
+                <!-- action에 걸린 주소를 엔드포인트라고 함 -->
+                <form action="/reply/{{replyId}}/delete" method="post">
                     <input type="hidden" name="boardId" value="{{boardId}}"/>
                     <button class="btn"><img width="24" height="24"
                             src="https://img.icons8.com/windows/24/delete-sign.png" alt="delete-sign" /></button>

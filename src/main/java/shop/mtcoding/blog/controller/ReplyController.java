@@ -55,6 +55,7 @@ public class ReplyController {
         if (boardId == null) {
             return "redirect:/40x";
         }
+        // 바디데이터가 있으니까 유효성 검사
 
         // 인증체크
         User sessionUser = (User) session.getAttribute("sessionUser");

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,31 +58,9 @@ public class UserController {
         return new ResponseEntity<String>("유저네임을 사용할 수 있습니다", HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public String login(LoginDTO loginDTO) {
-        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {
-            return "redirect:/40x";
-        }
-        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
-            return "redirect:/40x";
-        }
-        // 핵심기능
-
-        try {
-            User user = userRepository.findByUsernameAndPassword(loginDTO);
-            session.setAttribute("sessionUser", user);
-            // 로그인 정보 저장
-            return "redirect:/";
-            // 유저 정보가 맞으면 메인페이지로 가기
-        } catch (Exception e) {
-            return "redirect:/exLogin";
-            // 유저 정보가 틀리다면 다시 로그인 페이지로
-        }
-    }
-
     // 이게 진짜 방법 (실무 )
     @PostMapping("/join")
-    public String join(JoinDTO joinDTO) {
+    public String hashJoin(JoinDTO joinDTO) {
         // 핵심기능
 
         // validation check(유효성 검사 - 반드시 해야함! - 포스트맨을 타고 온 공격자들을 막는 것임)
@@ -107,19 +86,54 @@ public class UserController {
         if (user != null) {
             return "redirect:/50x";
         }
-        userRepository.save(joinDTO); // 핵심 기능
+
+        String hashPassword = BCrypt.hashpw(joinDTO.getPassword(), BCrypt.gensalt());
+        joinDTO.setPassword(hashPassword);
+
+        userRepository.hashSave(joinDTO); // 핵심 기능
         return "redirect:/loginForm";
-
     }
 
-    @GetMapping("/loginForm")
-    public String loginForm() {
-        return "user/loginForm";
+    @PostMapping("/login")
+    public String login(LoginDTO loginDTO) {
+        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {
+            return "redirect:/40x";
+        }
+        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
+            return "redirect:/40x";
+        }
+        // 핵심기능
+
+        try {
+            User userHash = userRepository.findByUserId(loginDTO);
+            boolean isValid = BCrypt.checkpw(loginDTO.getPassword(), userHash.getPassword());
+            // user2.getPassword() = DB
+            if (isValid) {
+                session.setAttribute("sessionUser", userHash);
+                return "redirect:/";
+            } else {
+                return "redirect:/exLogin";
+            }
+
+            // 로그인 정보 저장
+            // 유저 정보가 맞으면 메인페이지로 가기
+        } catch (Exception e) {
+            return "redirect:/exLogin";
+            // 유저 정보가 틀리다면 다시 로그인 페이지로
+        }
     }
 
-    @GetMapping("/joinForm")
-    public String joinForm() {
-        return "user/joinForm";
+    @PostMapping("/user/update")
+    public String userUpdate(UserUpdateDTO userUpdateDTO) {
+
+        user = (User) session.getAttribute("sessionUser");
+        if (user == null) {
+            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+        }
+        userUpdateDTO.setPassword(hashPassword);
+        userRepository.update(userUpdateDTO);
+        String hashPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        return "redirect:/";
     }
 
     @GetMapping("/user/{id}/updateForm")
@@ -134,16 +148,82 @@ public class UserController {
         return "user/updateForm";
     }
 
-    @PostMapping("/user/{id}/update")
-    public String userUpdate(@PathVariable Integer id, UserUpdateDTO userUpdateDTO) {
-        User user = userRepository.findById(id);
-        user = (User) session.getAttribute("sessionUser");
-        if (user == null) {
-            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
-        }
-        userRepository.update(userUpdateDTO, id);
-        return "redirect:/";
+    // @PostMapping("/login")
+    // public String login(LoginDTO loginDTO) {
+    // if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {
+    // return "redirect:/40x";
+    // }
+    // if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
+    // return "redirect:/40x";
+    // }
+    // // 핵심기능
+
+    // try {
+    // User user = userRepository.findByUsernameAndPassword(loginDTO);
+    // session.setAttribute("sessionUser", user);
+    // // 로그인 정보 저장
+    // return "redirect:/";
+    // // 유저 정보가 맞으면 메인페이지로 가기
+    // } catch (Exception e) {
+    // return "redirect:/exLogin";
+    // // 유저 정보가 틀리다면 다시 로그인 페이지로
+    // }
+    // }
+
+    // // 이게 진짜 방법 (실무 )
+    // @PostMapping("/join")
+    // public String join(JoinDTO joinDTO) {
+    // // 핵심기능
+
+    // // validation check(유효성 검사 - 반드시 해야함! - 포스트맨을 타고 온 공격자들을 막는 것임)
+    // // 공백이거나 값을 적지 않을 때 (view에서는 required로 막은 상태, 포스트맨으로 들어올 가능성이 있을 때 유효성 검사)
+    // if (joinDTO.getUsername() == null || joinDTO.getUsername().isEmpty()) {
+    // return "redirect:/40x";
+    // // @ResponseBody를 붙여서 return에 error라는 데이터 값을 보내도 되지만
+    // // 가독성을 좋게 하기 위해서 ErrorController에 페이지 연결해서 내주는 게 좋다
+    // // view ㅡ> controller ㅡ> repository
+    // }
+    // if (joinDTO.getPassword() == null || joinDTO.getPassword().isEmpty()) {
+    // return "redirect:/40x";
+    // }
+    // if (joinDTO.getEmail() == null || joinDTO.getEmail().isEmpty()) {
+    // return "redirect:/40x";
+    // }
+
+    // // DB에 해당 username이 있는지 체크해보기
+    // // 예외처리를 언제해봤나 ?
+    // // 포스트맨에서 다이렉트로 연결요청이 왔을 때
+
+    // User user = userRepository.findByUsername(joinDTO.getUsername());
+    // if (user != null) {
+    // return "redirect:/50x";
+    // }
+    // userRepository.save(joinDTO); // 핵심 기능
+    // return "redirect:/loginForm";
+
+    // }
+
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "user/loginForm";
     }
+
+    @GetMapping("/joinForm")
+    public String joinForm() {
+        return "user/joinForm";
+    }
+
+    // @PostMapping("/user/{id}/update")
+    // public String userUpdate(@PathVariable Integer id, UserUpdateDTO
+    // userUpdateDTO) {
+    // User user = userRepository.findById(id);
+    // user = (User) session.getAttribute("sessionUser");
+    // if (user == null) {
+    // return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+    // }
+    // userRepository.update(userUpdateDTO, id);
+    // return "redirect:/";
+    // }
 
     @GetMapping("/logout")
     public String logout() {
