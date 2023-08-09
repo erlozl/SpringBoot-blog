@@ -187,15 +187,23 @@ public class BoardController {
     public String detailPage(@PathVariable Integer id, HttpServletRequest request, Integer sessionUserid) { // C
         User sessionUser = (User) session.getAttribute("sessionUser"); // session접근하는 이유 - 권한 체크
         // Board board = boardRepository.findById(id); // M
-        List<BoardDetailDTO> replyJoinAll = replyRepository.findByIdJoinReply(id, sessionUserid);
+
+        List<BoardDetailDTO> replyJoinAll = null;
+        // 데이터베이스에서 조회를 했더니 담을 그릇이 없어서 DTO를 만듬
+
+        if (sessionUser == null) {
+            replyJoinAll = boardRepository.findByIdJoinReply(id, sessionUserid);
+        } else {
+            replyJoinAll = boardRepository.findByIdJoinReply(id, null);
+        }
 
         boolean pageOwner = false;
         if (sessionUser != null) {
-            // System.out.println("테스트 세션 ID : " + sessionUser.getId());
-            // System.out.println("테스트 세션 board.getUser().getId() : " +
-            // board.getUser().getId());
+            System.out.println("테스트 세션 ID : " + sessionUser.getId());
+            System.out.println("테스트 세션 board.getUser().getId() : " +
+                    replyJoinAll.get(0).getBoardUserId());
             pageOwner = sessionUser.getId() == replyJoinAll.get(0).getBoardUserId();
-            // System.out.println("테스트 : pageOwner : " + pageOwner);
+            System.out.println("테스트 : pageOwner : " + pageOwner);
         }
 
         request.setAttribute("replyJoinAll", replyJoinAll);
