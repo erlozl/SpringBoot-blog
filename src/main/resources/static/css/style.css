@@ -105,6 +105,9 @@ button {
   background-color: var(--btn_01);
   color: var(--base_04);
 }
+#keyword + .dupli_check_btn {
+  margin-left: 0;
+}
 /* list */
 .list_tit {
   background-color: var(--bg_01);
@@ -150,7 +153,7 @@ button {
   position: absolute;
   margin: 0 auto;
   width: 80%;
-  bottom: 230px;
+  bottom: 210px;
 }
 
 .page-link {

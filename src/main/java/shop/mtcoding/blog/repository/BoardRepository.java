@@ -82,10 +82,23 @@ public class BoardRepository {
         // 여기서 page는 변수, 3은 상수는 대문자 (변하지 않는)
         // 0(1부터 시작하지 않음)은 limit의 시작 인덱스 번호, 3은 페이징 할 개수
         final int SIZE = 3; // 개수
-        Query query = em.createNativeQuery("select * from board_tb order by id desc limit :page, :size", Board.class);
+        Query query = em.createNativeQuery(
+                "select * from board_tb  order by id desc limit :page, :size", Board.class);
         // limit은 가장 마지막에 넣어야 한다
         query.setParameter("page", page * SIZE);
         query.setParameter("size", SIZE);
+
+        return query.getResultList();
+    }
+
+    // localhost:8080?page=0
+    public List<Board> findAll(int page, String keyword) {
+        final int SIZE = 3;
+        Query query = em.createNativeQuery(
+                "select * from board_tb where title like :keyword order by id desc limit :page, :size", Board.class);
+        query.setParameter("page", page * SIZE);
+        query.setParameter("size", SIZE);
+        query.setParameter("keyword", "%" + keyword + "%");
 
         return query.getResultList();
     }
@@ -109,6 +122,16 @@ public class BoardRepository {
         BigInteger count = (BigInteger) query.getSingleResult();
         return count.intValue();
     } // 총 5개 리턴
+
+    public int count(String keyword) {
+        Query query = em.createNativeQuery("select count(*) from board_tb where title like :keyword");
+        query.setParameter("keyword", "%" + keyword + "%");
+        // 원래는 Object 배열로 리턴 받는다, Object 배열은 칼럼의 연속이다.
+        // 그룹함수를 써서, 하나의 칼럼을 조회하면, Object로 리턴된다.
+        BigInteger count = (BigInteger) query.getSingleResult();
+
+        return count.intValue();
+    }
 
     public Board findById(Integer id) {
         Query query = em.createNativeQuery("select * from board_tb where id = :id", Board.class);

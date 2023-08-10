@@ -76,12 +76,16 @@ public class UserRepository {
     }
 
     @Transactional
-    public void update(UserUpdateDTO userUpdateDTO) {
+    public void update(UserUpdateDTO userUpdateDTO, Integer id) {
+        System.out.println("중복 테스트1");
         Query query = em.createNativeQuery(
                 "update user_tb set password = :password where id = :id");
-        query.setParameter("password", BCrypt.hashpw(userUpdateDTO.getPassword(), BCrypt.gensalt()));
+        query.setParameter("password", userUpdateDTO.getPassword());
+        System.out.println("중복 테스트2");
         query.setParameter("id", userUpdateDTO.getId());
+        System.out.println("중복 테스트3");
         query.executeUpdate();
+        System.out.println("중복 테스트4");
     }
 
     public User findById(Integer id) {
@@ -98,14 +102,5 @@ public class UserRepository {
         query.setParameter("username", loginDTO.getUsername());
         User userList = (User) query.getSingleResult();
         return userList;
-    }
-
-    @Transactional
-    public void hashUpdate(UserUpdateDTO userUpdateDTO, Integer id) {
-        Query query = em.createNativeQuery(
-                "update user_tb set password = :password where id = :id");
-        query.setParameter("password", userUpdateDTO.getPassword());
-        query.setParameter("id", id);
-        query.executeUpdate();
     }
 }

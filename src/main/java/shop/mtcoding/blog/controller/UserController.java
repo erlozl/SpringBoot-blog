@@ -115,6 +115,7 @@ public class UserController {
             } else {
                 return "redirect:/loginForm";
             }
+
             // 로그인 정보 저장
             // 유저 정보가 맞으면 메인페이지로 가기
         } catch (Exception e) {
@@ -127,15 +128,18 @@ public class UserController {
     public String userUpdate(UserUpdateDTO userUpdateDTO) {
 
         User user = (User) session.getAttribute("sessionUser");
+        System.out.println("중복1 회원가입시 해시코드" + user.getPassword());
+
         if (user == null) {
             return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
         }
-        System.out.println("test" + user.getPassword());
 
         String hashPassword = BCrypt.hashpw(userUpdateDTO.getPassword(), BCrypt.gensalt());
         userUpdateDTO.setPassword(hashPassword);
-        userRepository.update(userUpdateDTO);
-        System.out.println("test" + userUpdateDTO.getPassword());
+        System.out.println("중복3 변경된 해시코드" + userUpdateDTO.getPassword());
+
+        userRepository.update(userUpdateDTO, user.getId());
+        System.out.println("중복3 최초등록" + userUpdateDTO.getPassword());
 
         // 세션 동기화
         return "redirect:/";

@@ -4,19 +4,41 @@
 
 
 <div class="container">
+
+    <div class="mb-2 d-flex justify-content-end">
+        <form class="d-flex" action="/" method="get" onsubmit="return valid()">
+            <input id="keyword" class="form-control me-2" type="text" name="keyword" placeholder="Search" required>
+            <button class="dupli_check_btn" type="submit">Search</button>
+        </form>
+    </div>
     <div class="card">
-    {{#boardList}}
+        {{#boardList}}
         <div class="card-body">
             <h4 class="card-title mb-5">{{title}}</h4>
             <a href="/board/{{id}}" class="btn btn-primary">상세보기</a>
         </div>
-    {{/boardList}}
+        {{/boardList}}
     </div>
 
     <ul class="pagination mt-5">
-        <li class="page-item {{#first}}disabled{{/first}}"><a class="page-link" href="?page={{prevPage}}">Previous</a></li>
-        <li class="page-item {{#last}}disabled{{/last}}"><a class="page-link" href="?page={{nextPage}}">Next</a></li>
+        <li class="page-item {{#first}}disabled{{/first}}"><a class="page-link"
+                href="?page={{prevPage}}&keyword={{keyword}}">Previous</a>
+        </li>
+        <li class="page-item {{#last}}disabled{{/last}}"><a class="page-link"
+                href="?page={{nextPage}}&keyword={{keyword}}">Next</a></li>
     </ul>
 </div>
 
+<script>
+    function iswhitespace(str) {
+        return str.trim() === "";
+    }
+    function valid() {
+        let keywordSearch = document.querySelector("#keyword").value;
+        if (iswhitespace(keywordSearch)) {
+            alert("검색을 입력해주세요");
+            return false;
+        }
+    }
+</script>
 {{> /layout/footer}}

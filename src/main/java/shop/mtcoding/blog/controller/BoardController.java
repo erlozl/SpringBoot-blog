@@ -37,6 +37,12 @@ public class BoardController {
     @Autowired
     private HttpSession session;
 
+    @ResponseBody
+    @GetMapping("/test/count")
+    public String testCount() {
+        int count = boardRepository.count();
+        return count + "";
+    }
     // @ResponseBody
     // @GetMapping("/board/reply")
     // public List<Reply> test2() {
@@ -120,15 +126,34 @@ public class BoardController {
     @GetMapping({ "/", "/board" })
     // 값이 안 들어오면 디폴트값으로 0이 들어간다는 뜻
     // getMapping에서 들어오는 주소의 변수명은 쿼리스트링의 키 값
-    public String index(@RequestParam(defaultValue = "0") Integer page,
+    public String index(
+            @RequestParam(defaultValue = "") String keyword,
+            // 검색 안했을 때 keyword = null
+            @RequestParam(defaultValue = "0") Integer page,
             HttpServletRequest request) {
         // 1. 유효성 검사 X
         // 2. 인증 검사 X
+        System.out.println("테스트 : keyword : " + keyword);
+        System.out.println("테스트 : keyword length : " + keyword.length());
+        System.out.println("테스트 : keyword isEmpty : " + keyword.isEmpty());
+        System.out.println("테스트 : keyword isBlank : " + keyword.isBlank());
+
+        List<Board> boardList = null;
+        int totalCount = 0;
+        request.setAttribute("keyword", keyword); // 공백 or 값 있음
+        if (keyword.isBlank()) {
+            boardList = boardRepository.findAll(page); // 1
+            totalCount = boardRepository.count(); // totalCount = 5
+        } else {
+            boardList = boardRepository.findAll(page, keyword);
+            System.out.println("테스트 페이지 " + boardList);
+
+            totalCount = boardRepository.count(keyword);
+            System.out.println("테스트 전체 게시물 수 " + totalCount);
+        }
 
         // final int PAGESIZE = 3;
-        List<Board> boardList = boardRepository.findAll(page); // 1
         // List<Board> countAll = boardRepository.findCountAll();
-        int totalCount = boardRepository.count(); // totalCount = 5
         int totalPage = totalCount / 3; // totalPage = 1
         if (totalCount % 3 > 0) {
             totalPage = totalPage + 1; // totalPage = 2
@@ -150,6 +175,7 @@ public class BoardController {
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("totalCount", totalCount);
         // 페이징 데이터라고 함
+
         return "index";
     }
 
@@ -166,10 +192,10 @@ public class BoardController {
     @PostMapping("/board/save") // 포스트맨으로 바로 적을 수 있기 때문에 다시 인증체크 해야함
     public String save(WriteDTO writeDTO) {
         // validation check(유효성 검사)
-        if (writeDTO.getTitle() == null || writeDTO.getContent().isEmpty()) {
+        if (writeDTO.getTitle() == null || writeDTO.getTitle().isEmpty()) {
             return "redirect:/40x";
         }
-        if (writeDTO.getTitle() == null || writeDTO.getContent().isEmpty()) {
+        if (writeDTO.getContent() == null || writeDTO.getContent().isEmpty()) {
             return "redirect:/40x";
         }
 
@@ -179,7 +205,11 @@ public class BoardController {
             return "redirect:/loginForm";
         }
 
+        writeDTO.setTitle(writeDTO.getTitle().replaceAll("<", "&lt;"));
+        writeDTO.setTitle(writeDTO.getTitle().replaceAll(">", "&gt;"));
+
         boardRepository.save(writeDTO, sessionUser.getId());
+        boardRepository.save(writeDTO, 1);
         return "redirect:/";
     }
 
