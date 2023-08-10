@@ -93,16 +93,6 @@ public class UserRepository {
 
     // 해쉬 적용
 
-    @Transactional
-    public void hashSave(JoinDTO joinDTO) {
-        Query query = em
-                .createNativeQuery("insert into user_tb (username,password,email) values(:username,:password,:email)");
-        query.setParameter("username", joinDTO.getUsername());
-        query.setParameter("password", joinDTO.getPassword());
-        query.setParameter("email", joinDTO.getEmail());
-        query.executeUpdate(); // 쿼리를 전송 ( DBMS )
-    }
-
     public User findByUserId(LoginDTO loginDTO) {
         Query query = em.createNativeQuery("select * from user_tb where username= :username", User.class);
         query.setParameter("username", loginDTO.getUsername());

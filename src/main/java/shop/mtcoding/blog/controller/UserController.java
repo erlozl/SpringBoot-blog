@@ -87,10 +87,10 @@ public class UserController {
             return "redirect:/50x";
         }
 
-        String hashPassword = BCrypt.hashpw(joinDTO.getPassword(), BCrypt.gensalt());
-        joinDTO.setPassword(hashPassword);
+        String encPassword = BCrypt.hashpw(joinDTO.getPassword(), BCrypt.gensalt());
+        joinDTO.setPassword(encPassword);
 
-        userRepository.hashSave(joinDTO); // 핵심 기능
+        userRepository.save(joinDTO); // 핵심 기능
         return "redirect:/loginForm";
     }
 
@@ -105,16 +105,16 @@ public class UserController {
         // 핵심기능
 
         try {
-            User userHash = userRepository.findByUserId(loginDTO);
+            User userHash = userRepository.findByUsername(loginDTO.getUsername());
+            // User userHash = userRepository.findByUserId(loginDTO);
             boolean isValid = BCrypt.checkpw(loginDTO.getPassword(), userHash.getPassword());
             // user2.getPassword() = DB
-            if (isValid) {
+            if (isValid == true) {
                 session.setAttribute("sessionUser", userHash);
                 return "redirect:/";
             } else {
-                return "redirect:/exLogin";
+                return "redirect:/loginForm";
             }
-
             // 로그인 정보 저장
             // 유저 정보가 맞으면 메인페이지로 가기
         } catch (Exception e) {
@@ -126,25 +126,37 @@ public class UserController {
     @PostMapping("/user/update")
     public String userUpdate(UserUpdateDTO userUpdateDTO) {
 
-        user = (User) session.getAttribute("sessionUser");
+        User user = (User) session.getAttribute("sessionUser");
         if (user == null) {
             return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
         }
+        System.out.println("test" + user.getPassword());
+
+        String hashPassword = BCrypt.hashpw(userUpdateDTO.getPassword(), BCrypt.gensalt());
         userUpdateDTO.setPassword(hashPassword);
         userRepository.update(userUpdateDTO);
-        String hashPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        System.out.println("test" + userUpdateDTO.getPassword());
+
+        // 세션 동기화
         return "redirect:/";
     }
 
-    @GetMapping("/user/{id}/updateForm")
-    public String userUpdateForm(@PathVariable Integer id, HttpServletRequest request) {
-        User user = userRepository.findById(id);
-
-        user = (User) session.getAttribute("sessionUser");
-        if (user == null) {
-            return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
-        }
+    // id 사용하면 인증체크
+    // 주소에 적은 값은 신뢰할 수 없다 - 포스트맨 때문에
+    // 자기맘대로 주소를 넣을 수 있기 때문에
+    // 세션값을 쓸때는 굳이 {id}를 안 써도 됨 , 권한체크도 X
+    // @GetMapping("/user/{id}/updateForm")
+    @GetMapping("/user/updateForm")
+    public String userUpdateForm(HttpServletRequest request) {
+        // User user = userRepository.findById(id);
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        // if (sessionUser == null) {
+        // return "redirect:/loginForm"; // 401 (반드시 스스로 인증해야 함)
+        // }
+        User user = userRepository.findByUsername(sessionUser.getUsername());
         request.setAttribute("user", user);
+        // 유니크를 걸면 자동으로 인덱스가 걸린다 - 인덱스(목차)
+
         return "user/updateForm";
     }
 

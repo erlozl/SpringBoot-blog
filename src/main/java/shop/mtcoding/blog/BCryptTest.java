@@ -13,6 +13,7 @@ public class BCryptTest {
         // 3. BCrypt.hashpw("1234", salt) 함수는 생성된 솔트와 평문
         // 비밀번호를 입력으로 받아 해시된 비밀번호를 반환
         System.out.println("encPassword : " + encPassword);
+        System.out.println(encPassword.length());
 
         boolean isValid = BCrypt.checkpw("12345", encPassword);
         System.out.println(isValid);

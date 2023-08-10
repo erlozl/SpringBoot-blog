@@ -24,8 +24,9 @@ public class User {
     @Column(nullable = false, length = 20, unique = true) // NOT NULL 제약 추가
     private String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 60)
     private String password;
+    // length 확인해서 길이 맞춰주기
 
     @Column(nullable = false, length = 20)
     private String email;
