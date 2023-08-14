@@ -58,7 +58,7 @@ public class UserController {
         return new ResponseEntity<String>("유저네임을 사용할 수 있습니다", HttpStatus.OK);
     }
 
-    // 이게 진짜 방법 (실무 )
+    // (실무 AOP)
     @PostMapping("/join")
     public String hashJoin(JoinDTO joinDTO) {
         // 핵심기능
@@ -78,11 +78,10 @@ public class UserController {
             return "redirect:/40x";
         }
 
-        // DB에 해당 username이 있는지 체크해보기
-        // 예외처리를 언제해봤나 ?
-        // 포스트맨에서 다이렉트로 연결요청이 왔을 때
-
+        // jpa ( 기본 메서드 활용, 기술에 대한 원리 공부 )
         User user = userRepository.findByUsername(joinDTO.getUsername());
+
+        // 에러에 대한 처리를 담당하는 클래스 하나 생성 -> 위임 -> 자바스크립트 변경
         if (user != null) {
             return "redirect:/50x";
         }

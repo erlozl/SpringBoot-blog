@@ -77,15 +77,11 @@ public class UserRepository {
 
     @Transactional
     public void update(UserUpdateDTO userUpdateDTO, Integer id) {
-        System.out.println("중복 테스트1");
         Query query = em.createNativeQuery(
                 "update user_tb set password = :password where id = :id");
         query.setParameter("password", userUpdateDTO.getPassword());
-        System.out.println("중복 테스트2");
-        query.setParameter("id", userUpdateDTO.getId());
-        System.out.println("중복 테스트3");
+        query.setParameter("id", id);
         query.executeUpdate();
-        System.out.println("중복 테스트4");
     }
 
     public User findById(Integer id) {

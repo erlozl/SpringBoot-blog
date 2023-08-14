@@ -205,11 +205,7 @@ public class BoardController {
             return "redirect:/loginForm";
         }
 
-        writeDTO.setTitle(writeDTO.getTitle().replaceAll("<", "&lt;"));
-        writeDTO.setTitle(writeDTO.getTitle().replaceAll(">", "&gt;"));
-
         boardRepository.save(writeDTO, sessionUser.getId());
-        boardRepository.save(writeDTO, 1);
         return "redirect:/";
     }
 

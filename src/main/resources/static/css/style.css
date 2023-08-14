@@ -150,10 +150,8 @@ button {
 /* pagination */
 .pagination {
   justify-content: center;
-  position: absolute;
   margin: 0 auto;
   width: 80%;
-  bottom: 210px;
 }
 
 .page-link {
